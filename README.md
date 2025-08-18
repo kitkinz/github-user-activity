@@ -10,7 +10,7 @@ Fetch the recent activity of the specified GitHub user using the GitHub API. You
 https://api.github.com/users/<username>/events
 Example: https://api.github.com/users/kamranahmedse/events
 ```
-Display the fetched activity in the terminal. <br />
+
 Output:
 ```
 - Pushed 3 commits to kamranahmedse/developer-roadmap
