@@ -1,5 +1,5 @@
 # GitHub User Activity Console Application
-Project task URL: https://roadmap.sh/projects/github-user-activity
+Project task URL: https://roadmap.sh/projects/github-user-activity <br />
 A simple command line interface (CLI) to fetch the recent activity of a GitHub user and display it in the terminal. <br />
 
 Handled events: <br />
