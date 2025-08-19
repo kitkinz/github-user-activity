@@ -64,85 +64,37 @@ class Program
                         // Handle for different event types
                         foreach (var userEvent in events)
                         {
-                            Console.WriteLine($"\nEvent ID: {userEvent.Id}");
-                            Console.WriteLine($"Event Type: {userEvent.Type}");
-
+                            userEvent.Payload.TryGetProperty("action", out var actionProp);
                             switch (userEvent.Type)
                             {
                                 case "PushEvent":
-                                    Console.WriteLine($"A push was made to {userEvent.Repo.Name}");
+                                    var pushPayLoad = userEvent.Payload.Deserialize<PushEventPayload>();
+                                    string message = pushPayLoad?.Size > 1
+                                        ? $"Pushed {pushPayLoad?.Size} commits to" : "Pushed a commit to";
+                                    Console.WriteLine($"{message} {userEvent.Repo.Name}");
                                     break;
 
                                 case "PullRequestEvent":
-                                    Console.WriteLine("A pull request was opened, closed, or merged.");
+                                    Console.WriteLine($"A pull request was {actionProp.GetString()} at {userEvent.Repo.Name}");
                                     break;
 
                                 case "IssuesEvent":
-                                    Console.WriteLine("An issue was opened, closed, or updated.");
-                                    break;
-
-                                case "IssueCommentEvent":
-                                    Console.WriteLine("A comment was added to an issue or pull request.");
-                                    break;
-
-                                case "ForkEvent":
-                                    Console.WriteLine("A repository was forked.");
+                                    Console.WriteLine($"An issue was {actionProp.GetString()} at {userEvent.Repo.Name}");
                                     break;
 
                                 case "WatchEvent":
-                                    Console.WriteLine("A user starred a repository.");
+                                    Console.WriteLine($"Starred {userEvent.Repo.Name}");
                                     break;
 
                                 case "CreateEvent":
-                                    Console.WriteLine("A branch, tag, or repository was created.");
-                                    break;
-
-                                case "DeleteEvent":
-                                    Console.WriteLine("A branch or tag was deleted.");
-                                    break;
-
-                                case "ReleaseEvent":
-                                    Console.WriteLine("A release was published.");
-                                    break;
-
-                                case "MemberEvent":
-                                    Console.WriteLine("A user was added as a collaborator.");
-                                    break;
-
-                                case "PublicEvent":
-                                    Console.WriteLine("A private repository was made public.");
-                                    break;
-
-                                case "CommitCommentEvent":
-                                    Console.WriteLine("A comment was added to a commit.");
-                                    break;
-
-                                case "GollumEvent":
-                                    Console.WriteLine("A wiki page was created or updated.");
-                                    break;
-
-                                case "PullRequestReviewEvent":
-                                    Console.WriteLine("A pull request review was submitted.");
-                                    break;
-
-                                case "PullRequestReviewCommentEvent":
-                                    Console.WriteLine("A comment was added to a pull request review.");
-                                    break;
-
-                                case "PullRequestReviewThreadEvent":
-                                    Console.WriteLine("A pull request review thread was updated.");
-                                    break;
-
-                                case "SponsorshipEvent":
-                                    Console.WriteLine("A sponsorship event occurred.");
+                                    userEvent.Payload.TryGetProperty("ref_type", out var refTypeProp);
+                                    Console.WriteLine($"Created a {refTypeProp}");
                                     break;
 
                                 default:
-                                    Console.WriteLine("Unrecognized event type.");
                                     break;
                             }
                         }
-
                     }
                     else
                     {
@@ -180,6 +132,8 @@ class Program
         public required string Type { get; set; }
         [JsonPropertyName("repo")]
         public required Repo Repo { get; set; }
+        [JsonPropertyName("payload")]
+        public JsonElement Payload { get; set; }
     }
 
     // Class for Repo JSON
@@ -189,6 +143,13 @@ class Program
         public required int Id { get; set; }
         [JsonPropertyName("name")]
         public required string Name { get; set; }
+    }
+
+    // Class for PushEvent Payload
+    public class PushEventPayload
+    {
+        [JsonPropertyName("size")]
+        public required int Size { get; set; }
     }
 }
 
