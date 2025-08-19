@@ -1,6 +1,13 @@
 # GitHub User Activity Console Application
 A simple command line interface (CLI) to fetch the recent activity of a GitHub user and display it in the terminal. <br />
 
+Handled events: <br />
+- PushEvent
+- PullRequestEvent
+- IssuesEvent
+- WatchEvent
+- CreateEvent
+
 Provide the GitHub username as an argument when running the CLI.<br />
 `github-activity <username>`
 
